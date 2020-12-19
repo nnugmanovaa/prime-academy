@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class TaskCreateDto {
     @NotBlank
     @NotNull
@@ -19,4 +18,9 @@ public class TaskCreateDto {
     @NotBlank
     @NotNull
     private String description;
+
+    public TaskCreateDto(LocalDate date, String description) {
+        this.date = date;
+        this.description = description;
+    }
 }

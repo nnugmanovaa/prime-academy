@@ -8,47 +8,43 @@ import com.example.pmcourse.model.dto.TaskUpdateDto;
 import com.example.pmcourse.repository.TaskRepository;
 import com.example.pmcourse.service.ITaskService;
 import com.example.pmcourse.service.IUserService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
 public class TaskServiceImpl implements ITaskService {
-    @Autowired
     private TaskRepository taskRepository;
-
-    @Autowired
     private IUserService userService;
 
-    private Long getCurrentUserId() {
-        return userService.getCurrentUser().getId();
+    @Autowired
+    public TaskServiceImpl(TaskRepository taskRepository, IUserService userService) {
+        this.taskRepository = taskRepository;
+        this.userService = userService;
     }
 
     @Override
     public Task addTask(TaskCreateDto dto) {
-        Long userId = getCurrentUserId();
-        Task task = Task.builder()
+        Long userId = userService.getCurrentUserId();
+        return taskRepository.save(
+                Task.builder()
                 .date(dto.getDate())
                 .description(dto.getDescription())
                 .userId(userId)
-                .build();
-        return taskRepository.save(task);
+                .build()
+        );
     }
 
     @Override
     public List<Task> getAllTasks() {
-        Long userId = userService.getCurrentUser().getId();
+        Long userId = userService.getCurrentUserId();
         return taskRepository.findAllByUserId(userId);
     }
 
     @Override
     public Task getTaskById(Long id) {
-        Long userId = userService.getCurrentUser().getId();
+        Long userId = userService.getCurrentUserId();
         return  taskRepository.findByIdAndUserId(id,userId).orElseThrow(
                 () -> new GeneralApiServerException(ErrorMessageConstants.TASK_NOT_FOUND));
     }
@@ -64,7 +60,7 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public String deleteTask(Long id) {
-        Long userId = userService.getCurrentUser().getId();
+        Long userId = userService.getCurrentUserId();
         Task task = taskRepository.findByIdAndUserId(id,userId ).orElseThrow(
                 () -> new GeneralApiServerException(ErrorMessageConstants.TASK_NOT_FOUND));
         taskRepository.delete(task);
@@ -73,7 +69,7 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public void markTaskAsDone(Long id) {
-        Long userId = userService.getCurrentUser().getId();
+        Long userId = userService.getCurrentUserId();
         taskRepository.markAsDone(id, userId);
     }
 }

@@ -4,8 +4,6 @@ import com.example.pmcourse.model.dto.TaskCreateDto;
 import com.example.pmcourse.model.entities.Task;
 import com.example.pmcourse.model.dto.TaskUpdateDto;
 import com.example.pmcourse.service.ITaskService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@NoArgsConstructor
-@AllArgsConstructor
 @RequestMapping("api/tasks")
 public class TaskController {
+    private final ITaskService taskService;
+
     @Autowired
-    private ITaskService taskService;
+    public TaskController(ITaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody TaskCreateDto dto) {

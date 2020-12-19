@@ -7,4 +7,6 @@ public interface IUserService {
     User createUser(UserCreateDto dto);
 
     User getCurrentUser();
+
+    Long getCurrentUserId();
 }
