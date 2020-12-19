@@ -1,6 +1,6 @@
 package com.example.pmcourse.repository;
 
-import com.example.pmcourse.model.Task;
+import com.example.pmcourse.model.entities.Task;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -14,10 +14,11 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface TaskRepository extends PagingAndSortingRepository<Task, Long> {
-    List<Task> findAll();
-    Optional<Task> findById(Long id);
+    List<Task> findAllByUserId(Long userId);
+
+    Optional<Task> findByIdAndUserId(Long id, Long userId);
 
     @Modifying
-    @Query("UPDATE Task t set t.done = TRUE  where  t.id = :id")
-    void markAsDone(@Param("id") Long id);
+    @Query("UPDATE Task t set t.done = TRUE  where  t.id = :id and t.userId = :userId")
+    void markAsDone(@Param("id") Long id, Long userId);
 }
